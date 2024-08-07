@@ -1,0 +1,10 @@
+pandas
+scikit-learn
+xgboost
+matplotlib
+seaborn
+numpy
+joblib
+geopandas
+shapely
+statsmodels
