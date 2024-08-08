@@ -8,3 +8,5 @@ joblib
 geopandas
 shapely
 statsmodels
+pydantic
+flask
