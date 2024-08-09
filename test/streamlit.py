@@ -45,7 +45,7 @@ def main():
             st.write("Forecasted Turnovers :")
             st.write(donnees)
         else:
-            st.write("Back to 'Forecast' button to launch prediction pipeline ;)")
+            st.write("Click on 'Forecast' button to launch prediction pipeline.")
 
 if __name__ == "__main__":
     main()
