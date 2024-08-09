@@ -14,20 +14,19 @@ def envoyer_pour_prediction(donnees):
         return None
 
 def main():
-    st.title("MVP - Decathlon Turnover Forecasting Engine")
-    st.write("In God we trust, all others bring data!")
+    st.title("MVP - Store x Departement Turnover Forecast")
 
     # Téléchargement de fichier par l'utilisateur
-    fichier = st.file_uploader("Choose a CSV data file", type='csv')
+    fichier = st.file_uploader("Upload your csv data here", type='csv')
     if fichier is not None:
         # Chargement des données
         donnees = pd.read_csv(fichier).head(5)
 
         # Afficher les données chargées
-        st.write("Head of your input data :")
+        st.write("Overview of your data :")
         st.write(donnees)
 
-        if st.button("Forecast"):
+        if st.button("Launch Forecast"):
             # Prédire chaque ligne des données chargées
             liste = []
             predictions = []
@@ -46,7 +45,7 @@ def main():
             st.write("Forecasted Turnovers :")
             st.write(donnees)
         else:
-            st.write("Click on 'Forecast' to launch prediction pipeline")
+            st.write("Back to 'Forecast' button to launch prediction pipeline ;)")
 
 if __name__ == "__main__":
     main()
