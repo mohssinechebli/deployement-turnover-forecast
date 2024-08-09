@@ -45,13 +45,13 @@ IMAGE_TAG="v0"
 
 - template : gcloud builds submit --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:${IMAGE_TAG}
 
-- command : gcloud builds submit --tag us-central1-docker.pkg.dev/decathlon-turnover-forecast/repodecathlonturnoverforecast/docker-to:v0
+- command : gcloud builds submit --tag us-central1-docker.pkg.dev/decathlon-turnover-forecast/repodecathlonturnoverforecast/image-dev2:v0
+
 
 #### Déployer l'image sur Google Cloud Run
+##### Use UI in GCP Console or Use this command
 
 - template : gcloud run deploy --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO_NAME}/${IMAGE_NAME}:${IMAGE_TAG} --platform managed --region ${REGION}
-
-- command : gcloud run deploy --image us-central1-docker.pkg.dev/decathlon-turnover-forecast/repodecathlonturnoverforecast/docker-to:v0 --platform managed --region us-central1
 
 # 7 Test
 - Tester le code avec `test/test.py` en utilisant le lien disponible après le déploiement

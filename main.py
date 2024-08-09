@@ -1,41 +1,10 @@
 from pydantic import BaseModel  # Utilisé pour la validation des données
-import pandas as pd  # Utilisé pour la manipulation de données
-import joblib  # Utilisé pour charger le modèle sauvegardé
-from flask import Flask, request, jsonify  # Flask est un micro-framework pour les applications web
-from sklearn.base import BaseEstimator, TransformerMixin
-from datetime import datetime
+import pandas as pd  
+import joblib  
+from flask import Flask, request, jsonify  
+from preprocessing import CustomPreprocressing
+#from datetime import datetime
 
-class CustomPreprocressing(BaseEstimator, TransformerMixin):
-    """
-    This class includes all the steps for the preprocessing
-    """
-    def __init__(self, cat_cols):
-        """
-        Initialize the class / Can be empty
-        """
-        self.cat_cols = cat_cols
-
-    def fit(self, X, y=None):
-        """
-        This method is only created so that the pipeline containing this transformer does not raise an error
-        """
-        return self
-
-    def transform(self, data):
-        """
-        Inputs :
-          -- data : DataFrame, DataFrame contening all the data needed for the model
-        Outputs :
-          -- DataFrame, DataFrame prepared for modeling
-
-        """
-        data["day_id"] = pd.to_datetime(data["day_id"])
-        data["day_id_week"] = data.day_id.dt.isocalendar().week
-        data["day_id_month"] = data["day_id"].dt.month
-        data["day_id_year"] = data["day_id"].dt.year
-        data[self.cat_cols] = data[self.cat_cols].apply(lambda x: x.astype(str))
-        return data
-    
 # Définition du schéma des données d'entrée avec Pydantic
 # Cela garantit que les données reçues correspondent aux attentes du modèle
 class DonneesEntree(BaseModel):
@@ -46,7 +15,7 @@ class DonneesEntree(BaseModel):
     but_longitude: float  # store's longitude
     but_region_idr_region: int  # region's number
     zod_idr_zone_dgr: int  # zone's number
-    day_id : datetime # date
+    day_id : str # date en str to be converted in datetime in the preprcessing pipeline
 
 # Charger le modèle
 modele = joblib.load('turnover_forecasting_model.pkl')
@@ -59,7 +28,6 @@ app = Flask(__name__)
 def accueil():
     """ Endpoint racine qui fournit un message de bienvenue. """
     return jsonify({"message": "Welcome to API for forecasting-decathlon-turnover"})
-
 
 # Définition de la route pour les prédictions de diabète
 @app.route("/predire", methods=["POST"])
@@ -74,10 +42,6 @@ def predire():
         # Extraction et validation des données d'entrée en utilisant Pydantic
         donnees = DonneesEntree(**request.json)
         donnees_df = pd.DataFrame([donnees.dict()])  # Conversion en DataFrame
-        donnees_df["day_id"] = pd.to_datetime(donnees_df["day_id"])
-        donnees_df["day_id_week"] = donnees_df.day_id.dt.isocalendar().week
-        donnees_df["day_id_month"] = donnees_df["day_id"].dt.month
-        donnees_df["day_id_year"] = donnees_df["day_id"].dt.year
         
         # Utilisation du modèle pour prédire et obtenir les probabilités
         predictions = modele.predict(donnees_df)
@@ -94,5 +58,5 @@ def predire():
  
 # Point d'entrée pour exécuter l'application
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)  # Lancement de l'application sur le port 8000 avec le mode debug activé
+    app.run(host="0.0.0.0", port=8000)  # Lancement de l'application sur le port 8000 avec le mode debug activé
 
