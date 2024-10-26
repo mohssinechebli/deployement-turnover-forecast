@@ -1,0 +1,7 @@
+Flask
+gunicorn
+pillow
+pydantic
+scikit-learn
+joblib
+pandas
